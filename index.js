@@ -60,7 +60,7 @@ async function sendNotificationMessage(message) {
         if (err) {
           console.log(err);
         } else {
-          console.log(`Message published to topic ${topicName}`);
+          console.log(`Message published to topic `);
         }});
     console.log(`Message ${messageId} published.`);
 }
