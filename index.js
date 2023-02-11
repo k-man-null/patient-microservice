@@ -1,5 +1,5 @@
 const express = require('express')
-const {PubSub} = require('@google-cloud/pubsub');
+const { PubSub } = require('@google-cloud/pubsub');
 
 const app = express()
 
@@ -11,20 +11,23 @@ const doctors = [
     { name: "Dr. Amy Rodriguez" },
     { name: "Dr. John Smith" },
     { name: "Dr. Jane Doe" }
-  ];
+];
 
-const pubsub = new PubSub();
+const pubsub = new PubSub({
+    projectId: 'zendeta',
+    keyFilename: './keyfile.json'
+});
 
 
 app.get('/doctors', (req, res) => {
     try {
-        
+
         const data = doctors
 
-        
+
         return res.status(200).json({ data });
     } catch (err) {
-        
+
         return res.status(500).json({ error: err.message });
     }
 });
@@ -32,16 +35,16 @@ app.get('/doctors', (req, res) => {
 
 app.post('/appointment', async (req, res) => {
 
-    
+
     try {
-        
+
         const data = req.body.appointment
 
         sendNotificationMessage(data);
 
         return res.status(200).json({ data });
     } catch (err) {
-        
+
         return res.status(500).json({ error: err.message });
     }
 });
@@ -50,8 +53,9 @@ app.post('/appointment', async (req, res) => {
 
 async function sendNotificationMessage(message) {
     console.log(pubsub)
-    await pubsub.topic("appointment").publishMessage(Buffer.from(JSON.stringify({ message })));
-  }
+    const messageId =  await pubsub.topic("appointment").publishMessage(Buffer.from(JSON.stringify({ message })));
+    console.log(`Message ${messageId} published.`);
+}
 
 
 const PORT = 8080;
