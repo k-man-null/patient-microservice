@@ -30,8 +30,6 @@ app.get('/doctors', (req, res) => {
 });
 
 
-
-
 app.post('/appointment', async (req, res) => {
 
     
@@ -51,7 +49,8 @@ app.post('/appointment', async (req, res) => {
 
 
 async function sendNotificationMessage(message) {
-    await pubsub.topic("appointment").publish(Buffer.from(JSON.stringify({ message })));
+    console.log(pubsub)
+    await pubsub.topic("appointment").publishMessage(Buffer.from(JSON.stringify({ message })));
   }
 
 
