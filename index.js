@@ -52,11 +52,13 @@ app.post('/appointment', async (req, res) => {
 
 
 async function sendNotificationMessage(message) {
+
+    const data = Buffer.from("JSON.stringify(message)")
     //console.log(pubsub)
-    const messageId =  await pubsub.topic("appointment").publishMessage(Buffer.from("JSON.stringify(message)"),
+    const messageId =  await pubsub.topic("appointment").publishMessage({data},
     (err) => {
         if (err) {
-          console.error(err);
+          console.log(err);
         } else {
           console.log(`Message published to topic ${topicName}`);
         }});
