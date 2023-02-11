@@ -53,7 +53,7 @@ app.post('/appointment', async (req, res) => {
 
 async function sendNotificationMessage(message) {
     //console.log(pubsub)
-    const messageId =  await pubsub.topic("appointment").publishMessage(Buffer.from(JSON.stringify({ message })),
+    const messageId =  await pubsub.topic("appointment").publishMessage(Buffer.from("JSON.stringify(message)"),
     (err) => {
         if (err) {
           console.error(err);
