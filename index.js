@@ -1,4 +1,5 @@
 const express = require('express')
+const {PubSub} = require('@google-cloud/pubsub');
 
 const app = express()
 
@@ -9,37 +10,45 @@ const doctors = [
     { name: "Dr. John Smith" },
     { name: "Dr. Jane Doe" }
   ];
-  
+
+const pubsub = new PubSub();
 
 
 app.get('/doctors', (req, res) => {
     try {
-        // Perform asynchronous operation
+        
         const data = doctors
 
-        // Send the response back to the client
+        
         return res.status(200).json({ data });
     } catch (err) {
-        // Handle errors
+        
         return res.status(500).json({ error: err.message });
     }
 });
 
 
-app.post('/appointment', (req, res) => {
+
+
+app.post('/appointment', async (req, res) => {
     try {
-        // Perform asynchronous operation
+        
         const data = req.body.appointment
 
+        sendNotificationMessage(data);
 
-        // Send the response back to the client
         return res.status(200).json({ data });
     } catch (err) {
-        // Handle errors
+        
         return res.status(500).json({ error: err.message });
     }
 });
 
+
+
+async function sendNotificationMessage(message) {
+    await pubsub.topic("appointment").publish(Buffer.from(JSON.stringify({ message })));
+  }
 
 
 const PORT = 8080;
