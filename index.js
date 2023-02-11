@@ -3,6 +3,8 @@ const {PubSub} = require('@google-cloud/pubsub');
 
 const app = express()
 
+app.use(express.json())
+
 const doctors = [
     { name: "Dr. Sarah Johnson" },
     { name: "Dr. Michael Brown" },
@@ -31,6 +33,8 @@ app.get('/doctors', (req, res) => {
 
 
 app.post('/appointment', async (req, res) => {
+
+    
     try {
         
         const data = req.body.appointment
