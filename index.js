@@ -40,7 +40,7 @@ app.post('/appointment', async (req, res) => {
 
         const data = req.body.appointment
 
-        sendNotificationMessage(data);
+        publishMessage(data).catch(console.error);
 
         return res.status(200).json({ data });
     } catch (err) {
@@ -51,19 +51,25 @@ app.post('/appointment', async (req, res) => {
 
 
 
-async function sendNotificationMessage(message) {
-
-    const data = Buffer.from("JSON.stringify(message)")
-    //console.log(pubsub)
-    const messageId =  await pubsub.topic("appointment").publishMessage({data},
-    (err) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(`Message published to topic `);
-        }});
-    console.log(`Message ${messageId} published.`);
-}
+async function publishMessage(data) {
+    // Publishes the message as a string, e.g. "Hello, world!" or JSON.stringify(someObject)
+    const dataBuffer = Buffer.from(data);
+    const customAttributes = {
+        origin: 'nodejs-sample',
+        username: 'gcp',
+      };
+    try {
+      const messageId = await pubSubClient
+        .topic('appointment')
+        .publishMessage(dataBuffer, customAttributes);
+      console.log(`Message ${messageId} published.`);
+    } catch (error) {
+      console.error(`Received error while publishing: ${error.message}`);
+      process.exitCode = 1;
+    }
+  }
+  
+ 
 
 
 const PORT = 8080;
